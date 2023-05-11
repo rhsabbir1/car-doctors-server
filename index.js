@@ -32,6 +32,7 @@ async function run() {
         // const carDoctors = database.collection("carDoctors");
 
         const serviesCollection = client.db('carDoctor').collection('services')
+        const bookingCollection = client.db('carDoctor').collection('bookings')
 
         app.get('/services', async (req, res) => {
             const curcor = serviesCollection.find()
@@ -44,14 +45,19 @@ async function run() {
             const query = { _id: new ObjectId(id) };
 
             const options = {
-                
-                // Include only the `title` and `imdb` fields in the returned document
                 projection: {  title: 1, price: 1 ,service_id:1 },
             };
-
             const result = await serviesCollection.findOne(query ,options);
             res.send(result)
         })
+
+
+        app.post('/bookings',async(req , res)=>{
+            const booking = req.body;
+            const result = await bookingCollection.insertOne(booking)
+            res.send(result)
+        })
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
